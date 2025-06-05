@@ -57,19 +57,22 @@ Just press Enter for all prompts to use defaults.
 
 ### Step 2: Copy Your SSH Key to the Server
 
-On **your local machine**, run this for each server you want to access:
+Since all our servers share the same filesystem, you only need to copy your SSH key once to any server:
+
+On **your local machine**, run:
 ```bash
 ssh-copy-id your_username@ml003.research.partners.org
-ssh-copy-id your_username@ml007.research.partners.org
-ssh-copy-id your_username@ml008.research.partners.org
 ```
-Enter your password when prompted for each server.
+Enter your password when prompted.
+
+This will work for all servers (ml003, ml007, ml008) because they share the same home directory!
 
 ### Step 3: Test SSH Connection
 
-Try connecting without a password:
+Try connecting to any server without a password:
 ```bash
 ssh your_username@ml003.research.partners.org
+# or test with ml007 or ml008 - they should all work now!
 ```
 
 If it works without asking for a password, you're all set! Type `exit` to disconnect.
