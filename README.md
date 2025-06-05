@@ -2,11 +2,18 @@
 
 A simple tool to connect to Jupyter Lab on remote servers with persistent sessions. Once started, your Jupyter Lab session will keep running even if you disconnect your laptop!
 
+## 🖥️ Available Servers
+
+This script works with all our lab servers:
+- `ml003.research.partners.org`
+- `ml007.research.partners.org`
+- `ml008.research.partners.org`
+
 ## 📋 Prerequisites
 
 Before using this tool, make sure you have:
 
-1. **SSH access** to the remote machine (e.g., `ml003.research.partners.org`)
+1. **SSH access** to one of the remote machines listed above
 2. **Your SSH key set up** (see setup instructions below if you haven't done this)
 
 ## 🚀 Quick Start (If SSH is already set up)
@@ -22,9 +29,16 @@ Before using this tool, make sure you have:
    chmod +x connect_jupyter_lab.sh
    ```
 
-3. **Connect to Jupyter Lab:**
+3. **Connect to Jupyter Lab on any of our servers:**
    ```bash
+   # For ml003
    ./connect_jupyter_lab.sh ml003.research.partners.org
+   
+   # For ml007
+   ./connect_jupyter_lab.sh ml007.research.partners.org
+   
+   # For ml008
+   ./connect_jupyter_lab.sh ml008.research.partners.org
    ```
 
 That's it! Your browser should open with Jupyter Lab running. 🎉
@@ -43,11 +57,13 @@ Just press Enter for all prompts to use defaults.
 
 ### Step 2: Copy Your SSH Key to the Server
 
-On **your local machine**, run:
+On **your local machine**, run (replace `ml003` with your preferred server):
 ```bash
 ssh-copy-id your_username@ml003.research.partners.org
 ```
 Enter your password when prompted.
+
+**Note:** You'll need to repeat this for each server you want to access (ml003, ml007, ml008).
 
 ### Step 3: Test SSH Connection
 
@@ -65,11 +81,21 @@ Add this to `~/.ssh/config` on your local machine:
 Host ml003
     HostName ml003.research.partners.org
     User your_username
+
+Host ml007
+    HostName ml007.research.partners.org
+    User your_username
+
+Host ml008
+    HostName ml008.research.partners.org
+    User your_username
 ```
 
-Now you can use just `ml003` instead of the full hostname:
+Now you can use short names instead of the full hostname:
 ```bash
 ./connect_jupyter_lab.sh ml003
+./connect_jupyter_lab.sh ml007
+./connect_jupyter_lab.sh ml008
 ```
 
 ## 🔧 Setting Up Jupyter Password (First Time Only)
@@ -108,8 +134,13 @@ Now you're ready to use the connect script!
 ## 💻 Daily Usage
 
 ### Start Jupyter Lab
+Choose any available server:
 ```bash
 ./connect_jupyter_lab.sh ml003.research.partners.org
+# or
+./connect_jupyter_lab.sh ml007.research.partners.org
+# or
+./connect_jupyter_lab.sh ml008.research.partners.org
 ```
 
 This will:
@@ -124,12 +155,25 @@ This will:
 ```
 
 ### Reconnect After Closing Your Laptop
-Just run the start command again:
+Just run the start command again with the same server:
 ```bash
 ./connect_jupyter_lab.sh ml003.research.partners.org
 ```
 
 The script will detect your existing session and reconnect to it - all your notebooks will still be running!
+
+### Managing Multiple Sessions
+You can have different Jupyter sessions running on different servers simultaneously:
+```bash
+# Terminal 1
+./connect_jupyter_lab.sh ml003.research.partners.org  # Opens on port 8888
+
+# Terminal 2
+./connect_jupyter_lab.sh ml007.research.partners.org  # Opens on port 8889
+
+# Terminal 3
+./connect_jupyter_lab.sh ml008.research.partners.org  # Opens on port 8890
+```
 
 ## 🔍 Troubleshooting
 
