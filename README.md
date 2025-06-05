@@ -16,6 +16,12 @@ Before using this tool, make sure you have:
 1. **SSH access** to one of the remote machines listed above
 2. **Your SSH key set up** (see setup instructions below if you haven't done this)
 
+### 🔐 VPN Requirement
+
+**⚠️ IMPORTANT: If you are outside the MGB network, you MUST connect to the VPN first!**
+
+The lab servers are only accessible from within the MGB network. If you're working from home or outside the hospital, connect to the MGB VPN before using this script.
+
 ## 🚀 Quick Start (If SSH is already set up)
 
 1. **Clone the repository:**
@@ -42,6 +48,54 @@ Before using this tool, make sure you have:
    ```
 
 That's it! Your browser should open with Jupyter Lab running. 🎉
+
+## 🪟 Windows Setup (WSL2)
+
+If you're using Windows, you'll need to set up WSL2 (Windows Subsystem for Linux) first:
+
+### Step 1: Install Ubuntu from Microsoft Store
+
+1. Open the **Microsoft Store**
+2. Search for **Ubuntu** (or Ubuntu 22.04 LTS)
+3. Click **Install**
+4. Once installed, launch Ubuntu from the Start menu
+5. Create a username and password when prompted
+
+### Step 2: Configure WSL2 Networking
+
+For proper network connectivity, you need to update your WSL configuration:
+
+1. Open **PowerShell** as Administrator
+2. Create or edit the WSL config file:
+   ```powershell
+   notepad.exe "$env:USERPROFILE\.wslconfig"
+   ```
+3. Add the following configuration:
+   ```ini
+   [wsl2]
+   networkingMode = mirrored
+   dnsTunneling   = true      # keeps DNS in sync with Windows
+   autoProxy      = true      # honours Windows proxy settings
+   ```
+4. Save the file and restart WSL:
+   ```powershell
+   wsl --shutdown
+   ```
+5. Restart Ubuntu from the Start menu
+
+### Step 3: Clone the Repository in WSL
+
+Inside your Ubuntu terminal:
+```bash
+cd ~
+git clone https://github.com/pinellolab/connect_jupyter_lab.git
+cd connect_jupyter_lab
+chmod +x connect_jupyter_lab.sh
+```
+
+### Step 4: Continue with SSH Setup
+
+Now follow the SSH configuration steps below, all from within your Ubuntu terminal.
 
 ## 📖 First Time Setup - SSH Configuration
 
