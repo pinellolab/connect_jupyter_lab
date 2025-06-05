@@ -6,7 +6,6 @@
 #   connect_jupyter_lab <machine_name>        - Start Jupyter Lab and create tunnel
 #   connect_jupyter_lab <machine_name> stop   - Stop Jupyter Lab and close tmux session
 
-#SSH errors!
 #set -e
 
 SCRIPT_NAME=$(basename "$0")
@@ -238,19 +237,15 @@ setup_tunnel_and_open() {
     local token=$2
     local local_port=$3
     local remote_port=$4
-    print_info "Setting up SSH tunnel from localhost:$local_port to $machine:$remote_port"
-    pkill -f "ssh.*$machine.*$local_port:127.0.0.1:$remote_port" 2>/dev/null || true
-    ssh -f -N -L "$local_port:127.0.0.1:$remote_port" "$machine"
-    sleep 2
+
     local jupyter_url
-    if [[ "$token" == "no_token_required" ]]; then
+    if [[ "$token" == "no_token_required" || -z "$token" ]]; then
         jupyter_url="http://localhost:$local_port/lab"
-        print_success "Jupyter Lab is accessible at: $jupyter_url (no token required)"
     else
         jupyter_url="http://localhost:$local_port/lab?token=$token"
-        print_success "Jupyter Lab is accessible at: $jupyter_url"
     fi
-    print_success "SSH tunnel established!"
+
+    print_success "Jupyter Lab will be accessible at: $jupyter_url"
     if command -v open &> /dev/null; then
         open "$jupyter_url"
         print_success "Opened Jupyter Lab in browser"
@@ -261,13 +256,18 @@ setup_tunnel_and_open() {
         print_info "Please open the following URL in your browser:"
         print_info "$jupyter_url"
     fi
-    print_info ""
+
     print_info "To stop Jupyter Lab and close the tunnel, run:"
     print_info "  $SCRIPT_NAME $machine stop"
-    print_info ""
-    print_info "To check the tmux session on the remote machine:"
-    print_info "  ssh $machine"
-    print_info "  tmux attach -t ${TMUX_SESSION_PREFIX}_$(echo $machine | tr '.' '_')"
+
+    # Check if an SSH tunnel already exists for this port
+    if lsof -iTCP:$local_port -sTCP:LISTEN 2>/dev/null | grep ssh > /dev/null; then
+        print_success "SSH tunnel already exists on port $local_port."
+    else
+        print_success "SSH tunnel established on port $local_port. Use Control-C to close tunnel."
+        ssh  -N -L "$local_port:127.0.0.1:$remote_port" "$machine"
+    fi
+
 }
 
 debug_session() {
