@@ -59,10 +59,10 @@ check_remote_tmux_session() {
     ssh "$machine" "tmux has-session -t '$session_name' 2>/dev/null" && return 0 || return 1
 }
 
-# Function to find available port
+# Function to find available local port
 find_available_port() {
-    local port=$LOCAL_PORT
-    while netstat -tuln 2>/dev/null | grep -q ":$port "; do
+    local port=$1
+    while lsof -i :$port >/dev/null 2>&1; do
         ((port++))
     done
     echo $port
@@ -304,8 +304,11 @@ setup_tunnel_and_open() {
     local token=$2
     local local_port
     
-    local_port=$(find_available_port)
+    local_port=$(find_available_port $LOCAL_PORT)
     
+    if [ "$local_port" != "$LOCAL_PORT" ]; then
+        print_warning "Port $LOCAL_PORT is already in use, using port $local_port instead"
+    fi
     print_info "Setting up SSH tunnel from localhost:$local_port to $machine:$REMOTE_PORT"
     
     # Kill any existing SSH tunnel on the same port
