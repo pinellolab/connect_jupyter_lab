@@ -1,32 +1,111 @@
-# connect_jupyter_lab
+# Connect Jupyter Lab
 
-A bash script to manage persistent Jupyter Lab sessions on remote machines with SSH tunneling and tmux.
+A simple tool to connect to Jupyter Lab on remote servers with persistent sessions. Once started, your Jupyter Lab session will keep running even if you disconnect your laptop!
 
-## Features
+## 📋 Prerequisites
 
-- 🚀 Creates persistent Jupyter Lab sessions using tmux
-- 🔗 Automatic SSH tunnel setup for secure remote access
-- 💾 Preserves sessions across disconnections
-- 🔄 Smart session management - reuses existing sessions
-- 🌐 Automatic browser opening with authentication
-- 📁 Configurable working directory (defaults to `/data/pinello/PROJECTS`)
+Before using this tool, make sure you have:
 
-## Prerequisites
+1. **SSH access** to the remote machine (e.g., `ml003.research.partners.org`)
+2. **Your SSH key set up** (see setup instructions below if you haven't done this)
 
-- SSH access to remote machine
-- `tmux` installed on remote machine
-- `mamba` installed on remote machine with `jupyter_lab` environment
-- `jupyter lab` installed in the mamba environment
+## 🚀 Quick Start (If SSH is already set up)
 
-## Installation
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/pinellolab/connect_jupyter_lab.git
+   cd connect_jupyter_lab
+   ```
 
+2. **Make the script executable:**
+   ```bash
+   chmod +x connect_jupyter_lab.sh
+   ```
+
+3. **Connect to Jupyter Lab:**
+   ```bash
+   ./connect_jupyter_lab.sh ml003.research.partners.org
+   ```
+
+That's it! Your browser should open with Jupyter Lab running. 🎉
+
+## 📖 First Time Setup - SSH Configuration
+
+If you've never connected to the server before, follow these steps:
+
+### Step 1: Generate an SSH Key (if you don't have one)
+
+On **your local machine**, run:
 ```bash
-git clone https://github.com/yourusername/connect_jupyter_lab.git
-cd connect_jupyter_lab
-chmod +x connect_jupyter_lab.sh
+ssh-keygen -t rsa -b 4096
+```
+Just press Enter for all prompts to use defaults.
+
+### Step 2: Copy Your SSH Key to the Server
+
+On **your local machine**, run:
+```bash
+ssh-copy-id your_username@ml003.research.partners.org
+```
+Enter your password when prompted.
+
+### Step 3: Test SSH Connection
+
+Try connecting without a password:
+```bash
+ssh your_username@ml003.research.partners.org
 ```
 
-## Usage
+If it works without asking for a password, you're all set! Type `exit` to disconnect.
+
+### Step 4: (Optional) Set up SSH Config for Easier Access
+
+Add this to `~/.ssh/config` on your local machine:
+```
+Host ml003
+    HostName ml003.research.partners.org
+    User your_username
+```
+
+Now you can use just `ml003` instead of the full hostname:
+```bash
+./connect_jupyter_lab.sh ml003
+```
+
+## 🔧 Setting Up Jupyter Password (First Time Only)
+
+**⚠️ IMPORTANT: Run this ON THE REMOTE SERVER, not your local machine!**
+
+1. **First, SSH into the remote server:**
+   ```bash
+   ssh ml003.research.partners.org
+   ```
+
+2. **Activate the jupyter environment:**
+   ```bash
+   mamba activate jupyter_lab
+   ```
+
+3. **Set a Jupyter password:**
+   ```bash
+   jupyter lab password
+   ```
+   
+   You'll see:
+   ```
+   Enter password: 
+   Verify password: 
+   [JupyterPasswordApp] Wrote hashed password to /home/your_username/.jupyter/jupyter_server_config.json
+   ```
+
+4. **Exit from the remote server:**
+   ```bash
+   exit
+   ```
+
+Now you're ready to use the connect script!
+
+## 💻 Daily Usage
 
 ### Start Jupyter Lab
 ```bash
@@ -34,44 +113,65 @@ chmod +x connect_jupyter_lab.sh
 ```
 
 This will:
-1. Create a tmux session on the remote machine
-2. Activate the `jupyter_lab` mamba environment
-3. Start Jupyter Lab on port 8888
-4. Create an SSH tunnel from your local machine
-5. Open your browser with the correct URL and token
+- ✅ Create a persistent session on the server
+- ✅ Start Jupyter Lab in the `/data/pinello/PROJECTS` directory
+- ✅ Set up a secure tunnel to your computer
+- ✅ Open your browser automatically
 
 ### Stop Jupyter Lab
 ```bash
 ./connect_jupyter_lab.sh ml003.research.partners.org stop
 ```
 
-### Debug Session
+### Reconnect After Closing Your Laptop
+Just run the start command again:
+```bash
+./connect_jupyter_lab.sh ml003.research.partners.org
+```
+
+The script will detect your existing session and reconnect to it - all your notebooks will still be running!
+
+## 🔍 Troubleshooting
+
+### "Permission denied" when connecting
+- Make sure you've set up your SSH key (see First Time Setup above)
+- Check that you're using the correct username
+
+### "Command not found: mamba"
+- The server doesn't have mamba installed
+- Contact your system administrator
+
+### "Port 8888 is already in use"
+- The script will automatically find another port
+- You'll see: `[INFO] Creating SSH tunnel from localhost:8889...`
+
+### See what's happening on the server
 ```bash
 ./connect_jupyter_lab.sh ml003.research.partners.org debug
 ```
 
-## Persistent Sessions
+### Manually attach to the tmux session
+```bash
+ssh ml003.research.partners.org
+tmux attach -t jupyter_lab_ml003_research_partners_org
+```
+(Press `Ctrl+B` then `D` to detach)
 
-The script maintains persistent tmux sessions, so if you disconnect your laptop and reconnect later:
-- Your Jupyter Lab server continues running on the remote machine
-- Running the script again will detect the existing session
-- It will create a new SSH tunnel to the existing session
-- No work is lost!
+## 📁 Working Directory
 
-## Configuration
+By default, Jupyter Lab starts in `/data/pinello/PROJECTS`. All your notebooks and files should be saved there.
 
-Edit the script to modify:
-- `DEFAULT_WORKING_DIR`: Change the default directory (currently `/data/pinello/PROJECTS`)
-- `JUPYTER_PORT`: Change the Jupyter port (default 8888)
-- `LOCAL_PORT`: Change the local port (default 8888, auto-increments if busy)
+## 🤝 Support
 
-## Troubleshooting
+If you encounter any issues:
+1. Try the debug command first
+2. Check the Troubleshooting section
+3. Ask in the lab Slack channel
+4. Open an issue on GitHub
 
-- **Can't connect**: Ensure you have SSH access to the remote machine
-- **Jupyter won't start**: Check that the `jupyter_lab` mamba environment exists
-- **Port conflicts**: The script automatically finds available local ports
-- **Session issues**: Use the `debug` command to see tmux output
+## 👥 Contributing
 
-## License
+Feel free to submit issues and enhancement requests!
 
-MIT
+---
+Made with ❤️ by the Pinello Lab
