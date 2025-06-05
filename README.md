@@ -57,13 +57,13 @@ Just press Enter for all prompts to use defaults.
 
 ### Step 2: Copy Your SSH Key to the Server
 
-On **your local machine**, run (replace `ml003` with your preferred server):
+On **your local machine**, run this for each server you want to access:
 ```bash
 ssh-copy-id your_username@ml003.research.partners.org
+ssh-copy-id your_username@ml007.research.partners.org
+ssh-copy-id your_username@ml008.research.partners.org
 ```
-Enter your password when prompted.
-
-**Note:** You'll need to repeat this for each server you want to access (ml003, ml007, ml008).
+Enter your password when prompted for each server.
 
 ### Step 3: Test SSH Connection
 
@@ -102,7 +102,9 @@ Now you can use short names instead of the full hostname:
 
 **⚠️ IMPORTANT: Run this ON THE REMOTE SERVER, not your local machine!**
 
-1. **First, SSH into the remote server:**
+**Note:** Since all our servers share the same filesystem, you only need to set the Jupyter password once on any server, and it will work on all of them (ml003, ml007, ml008).
+
+1. **First, SSH into any remote server:**
    ```bash
    ssh ml003.research.partners.org
    ```
@@ -129,7 +131,7 @@ Now you can use short names instead of the full hostname:
    exit
    ```
 
-Now you're ready to use the connect script!
+Now you're ready to use the connect script on any of our servers!
 
 ## 💻 Daily Usage
 
