@@ -55,11 +55,12 @@ If you're using Windows, you'll need to set up WSL2 (Windows Subsystem for Linux
 
 ### Step 1: Install Ubuntu from Microsoft Store
 
-1. Open the **Microsoft Store**
-2. Search for **Ubuntu** (or Ubuntu 22.04 LTS)
-3. Click **Install**
-4. Once installed, launch Ubuntu from the Start menu
-5. Create a username and password when prompted
+1. In **Powershell**, install WSL using:
+    ```powershell
+   wsl --install
+   ```
+2. Once installed, launch a Ubuntu terminal
+3. Create a username and password when prompted
 
 ### Step 2: Configure WSL2 Networking
 
