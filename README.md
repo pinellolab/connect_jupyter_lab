@@ -235,6 +235,11 @@ You can have different Jupyter sessions running on different servers simultaneou
 ./connect_jupyter_lab.sh ml008.research.partners.org  # Opens on port 8890
 ```
 
+## Opening Notebooks in VSCode
+VSCode provides useful utilities to support software development, including type checking, code navigation, formatting, and copilot. It may benefit you to be able to access those functionalities also for Jupyter notebooks by opening them in VSCode. To connect to the existing Jupyter server on your tmux session for the notebooks opened in VSCode, follow [this instruction](https://code.visualstudio.com/docs/datascience/jupyter-notebooks#_connect-to-a-remote-jupyter-server) and enter the URL of your Jupyter server (ex. http://localhost:NNNNN). 
+
+You can edit the default working directory of a new notebook by following [this instruction](https://stackoverflow.com/a/77549530/10584152) by adding the script to your **user** settings.
+
 ## 🔍 Troubleshooting
 
 ### "Permission denied" when connecting
